@@ -1,6 +1,9 @@
 .classpath
 .project
 bin
+dest
+
+GoEuroTest.jar
 
 # Windows image file caches
 Thumbs.db
