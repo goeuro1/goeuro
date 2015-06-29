@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="goeuro" basedir=".">
+
+	<property name="src.dir" value="src" />
+	<property name="dest.dir" value="dest" />
+	<property name="lib.dir" value="lib" />
+	<property name="bin.dir" value="bin" />
+	
+	<property name="json.jar" value="json-20131018.jar" />
+	<property name="testng.jar" value="testng-6.9.4.jar" />
+	
+	<property name="jarname" value="GoEuroTest.jar" />
+	
+	<fileset id="base.jars" dir="${lib.dir}">
+		<filename name="${json.jar}"/>
+	</fileset>
+
+	<path id="base.path" >
+		<fileset refid="base.jars" />
+	</path>
+
+	<path id="tests.path">
+		<path refid="base.path" />
+		<fileset dir="${lib.dir}">
+			<filename name="${testng.jar}"/>
+		</fileset>
+		<pathelement location="testclasses" />
+	</path>
+	
+	<target name="remove-run-jar">
+		<delete file="${jarname}" />
+	</target>
+			
+	<target name="clean" depends="remove-run-jar">
+		<delete dir="${dest.dir}" />
+	</target>
+	
+	<target name="make-dest-dir">
+		<mkdir dir="${dest.dir}"/>
+	</target>
+	
+	<!-- http://stackoverflow.com/questions/5103384/ant-warning-includeantruntime-was-not-set -->
+	<target name="compile" depends="clean, make-dest-dir">
+		<javac includeantruntime="false" destdir="${dest.dir}" target="1.7">
+			<classpath refid="base.path" />
+			<src path="${src.dir}" />
+			<include name="**/*.java" />
+			<exclude name="**/*Test*"/>
+		</javac>
+	</target>
+
+	<target name="create-run-jar" depends="compile">	
+		<jar destfile="${jarname}" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="com.goeuro.GoEuroMain" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="${dest.dir}">
+				<include name="**/*.class" />
+				<exclude name="**/*Test*"/>
+			</fileset>
+			<zipgroupfileset refid="base.jars" />
+		</jar>
+	</target>
+
+
+</project>
+
