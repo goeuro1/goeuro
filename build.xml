@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="goeuro" basedir=".">
 
+	<!-- Set directory properties -->
 	<property name="src.dir" value="src" />
 	<property name="dest.dir" value="dest" />
 	<property name="lib.dir" value="lib" />
-	<property name="bin.dir" value="bin" />
 	
+	<!-- Various jars in the lib.dir -->
 	<property name="json.jar" value="json-20131018.jar" />
-	<property name="testng.jar" value="testng-6.9.4.jar" />
+	<property name="testng.jar" value="testng-6.9.4-rep.jar" />
+	<property name="jcommander.jar" value="jcommander-1.48.jar" />
 	
+	<!-- Name of the runnable jar to create as specified by question -->
 	<property name="jarname" value="GoEuroTest.jar" />
 	
+	<!-- Path configurations -->
+	
 	<fileset id="base.jars" dir="${lib.dir}">
-		<filename name="${json.jar}"/>
+		<include name="${json.jar}"/>
+	</fileset>
+	
+	<fileset id="test.jars" dir="${lib.dir}">
+		<include name="${json.jar}"/>
+		<include name="${testng.jar}" />
+		<include name="${jcommander.jar}" />
 	</fileset>
 
 	<path id="base.path" >
 		<fileset refid="base.jars" />
 	</path>
 
-	<path id="tests.path">
-		<path refid="base.path" />
-		<fileset dir="${lib.dir}">
-			<filename name="${testng.jar}"/>
-		</fileset>
-		<pathelement location="testclasses" />
+	<path id="test.path">
+		<fileset refid="test.jars" />
 	</path>
+	
+	<!-- clean an init targets -->
 	
 	<target name="remove-run-jar">
 		<delete file="${jarname}" />
@@ -35,29 +44,57 @@
 		<delete dir="${dest.dir}" />
 	</target>
 	
-	<target name="make-dest-dir">
+	<target name="init">
 		<mkdir dir="${dest.dir}"/>
 	</target>
 	
+	<!-- Compile non test classes -->
 	<!-- http://stackoverflow.com/questions/5103384/ant-warning-includeantruntime-was-not-set -->
-	<target name="compile" depends="clean, make-dest-dir">
-		<javac includeantruntime="false" destdir="${dest.dir}" target="1.7">
+	<target name="compile" depends="clean, init">
+		<javac includeantruntime="false" destdir="${dest.dir}" target="1.7"
+			casesensitive="true">
+			
 			<classpath refid="base.path" />
 			<src path="${src.dir}" />
 			<include name="**/*.java" />
 			<exclude name="**/*Test*"/>
 		</javac>
 	</target>
+	
+	<!-- Compile test classes -->
+	<target name="compile-tests" depends="compile">
+		<javac includeantruntime="false" destdir="${dest.dir}" target="1.7" 
+			casesensitive="true">
+			
+			<classpath refid="test.path" />
+			<src path="${src.dir}" />
+			<include name="**/*Test.java" />
+		</javac>	
+	</target>
+	
+	
+	<!-- Add testng task to project -->
+	<taskdef name="testng" classname="org.testng.TestNGAntTask" 
+		classpathref="test.path" />
+	
+	<!-- Run test suite -->
+	<target name="test" depends="compile-tests">
+		<testng classpathref="test.path" verbose="2">
+			<classpath location="${dest.dir}" />
+			<classfileset dir="${dest.dir}" includes="**/*Test.class" />
+		</testng>
+	</target>
 
+	<!-- Create the runnable jar -->
 	<target name="create-run-jar" depends="compile">	
 		<jar destfile="${jarname}" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Main-Class" value="com.goeuro.GoEuroMain" />
 				<attribute name="Class-Path" value="." />
 			</manifest>
-			<fileset dir="${dest.dir}">
+			<fileset dir="${dest.dir}" casesensitive="true">
 				<include name="**/*.class" />
-				<exclude name="**/*Test*"/>
+				<exclude name="**/*Test*" />
 			</fileset>
 			<zipgroupfileset refid="base.jars" />
 		</jar>

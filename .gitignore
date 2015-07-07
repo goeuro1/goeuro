@@ -2,6 +2,7 @@
 .project
 bin
 dest
+test-output
 
 GoEuroTest.jar
 

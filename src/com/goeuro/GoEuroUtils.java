@@ -9,9 +9,31 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import org.json.JSONObject;
+
+/**
+ * A class containing utility methods.
+ */
 public final class GoEuroUtils {
 	
 	private static final Logger log = Logger.getLogger(GoEuroUtils.class.getName());
+	
+	/**
+	 * Utility method for extracting optional values as a {@code String} 
+	 * from a {@code JSONObject}.
+	 * 
+	 * @param jsonObject   the jsonObject to query
+	 * @param key          the key to lookup
+	 * @param defaultValue the value to return if the jsonObject is null 
+	 * 					   or has no associated value for the given key
+	 * @return the value associated with the key as a String or the defaultValue
+	 */
+	public String safeOptString(JSONObject jsonObject, String key, String defaultValue) {
+		String value = jsonObject != null && jsonObject.has(key) ? 
+				jsonObject.optString(key, defaultValue) : defaultValue;
+				
+		return value;
+	}
 	
 	/**
 	 * Does a get request to the provided url.
@@ -23,25 +45,18 @@ public final class GoEuroUtils {
 	 * @see URL
 	 */
 	public String get(String url) throws MalformedURLException, IOException {
-		
-		// Set up buffer for return String
 		final StringBuilder response = new StringBuilder();
 		
 		// Set up variable which may need closing
 		HttpURLConnection con = null;
 		InputStream conInputStream = null;
 		
-		// Get URL object
 		URL urlObj = new URL(url);
 		
 		try {
 			
-			// Open connection
 			con = (HttpURLConnection) urlObj.openConnection();
- 
-			// optional default is GET
 			con.setRequestMethod("GET");
- 
 			conInputStream = con.getInputStream();
 		
 			try (BufferedReader in = new BufferedReader(
