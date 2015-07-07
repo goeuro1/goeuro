@@ -84,12 +84,12 @@ public class GoEuroMain {
 	 * is printed to standard out.
 	 * 
 	 * @param args an array which should have exactly one element,
-	 *             the string to query they GoEuro API with.
+	 *             the string to query the GoEuro API with.
 	 * @throws IOException if there is a problem doing IO.
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		// if output need to go somewhere else just generate
+		// if output needs to go somewhere else just generate
 		// an OutputStream to write to and wrap it with the BufferedWriter.
 		BufferedWriter writer = new BufferedWriter(
 				new OutputStreamWriter(System.out));

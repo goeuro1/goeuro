@@ -34,7 +34,7 @@
 		<fileset refid="test.jars" />
 	</path>
 	
-	<!-- clean an init targets -->
+	<!-- clean and init targets -->
 	
 	<target name="remove-run-jar">
 		<delete file="${jarname}" />

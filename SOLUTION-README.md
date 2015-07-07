@@ -15,12 +15,19 @@ My solution will run as specified by the problem statement.
 
     java -jar GoEuroTest.jar "STRING"
     
+Test Instructions
+-----------------
+
+Run tests with ant.
+
+    ant test
+    
 Assumptions
---------------
+------------
 
 The problem statement is underspecified (perhaps on purpose). 
 
-* FILE NAME
+#### FILE NAME
 
 It states that:
 
@@ -40,7 +47,7 @@ Alternate solutions could be to generate a name based on the input
 or add a second parameter to the input specifying a name. My solution
 could accommodate either with minimal change.
 
-* POURPOUSE
+#### PURPOSE
 
 I assume this will only be used as a stand alone application
 and is not meant to be included as a jar in a larger project.

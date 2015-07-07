@@ -1,16 +1,15 @@
 package com.goeuro;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 /**
- * 
- *
+ * Tests for the GoEuroUtils class.
  */
 public class GoEuroUtilsTest {
 	private GoEuroUtils utils;
